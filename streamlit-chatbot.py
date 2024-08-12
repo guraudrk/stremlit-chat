@@ -2,26 +2,29 @@ import streamlit as st
 import pickle
 from tensorflow.keras.models import load_model
 import requests
-from konlpy.tag import Kkma
+from nltk.tokenize import word_tokenize
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 import tempfile
 import re
 
-# Kkma 인스턴스 전역에서 생성
-kkma = Kkma()
+# nltk 다운로드 (필요시 실행)
+import nltk
+nltk.download('punkt')
 
+# S3 URL로 모델 다운로드
 @st.cache_resource
 def download_model():
     model_url = "https://aikingsejong.s3.ap-northeast-2.amazonaws.com/chatbot_model.h5"
     response = requests.get(model_url)
-    response.raise_for_status()  # HTTP 오류가 발생하면 예외를 발생시킵니다.
+    response.raise_for_status()
     with tempfile.NamedTemporaryFile(delete=False, suffix='.h5') as tmp_file:
         tmp_file.write(response.content)
         tmp_file.flush()
         return tmp_file.name
 
+# 데이터 로드
 @st.cache_resource
 def load_data():
     with open('organized_data.pickle', 'rb') as f:
@@ -51,7 +54,7 @@ st.title('AI 세종대왕과 대화하기')
 user_question = st.text_input('질문을 입력하세요: ')
 
 def preprocess_text(text):
-    tokens = kkma.morphs(text)
+    tokens = word_tokenize(text)
     return ' '.join(tokens)
 
 def find_similar_answer(question, data, vectorizer, lstm_model, tokenizer, threshold=1.0):
