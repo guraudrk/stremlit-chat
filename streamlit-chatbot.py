@@ -21,7 +21,7 @@ import tempfile
 
 
 # S3 URL로 모델 다운로드
-model_url = "https://aikingsejong.s3.ap-northeast-2.amazonaws.com/chatbot_model.keras"
+model_url = "https://aikingsejong.s3.ap-northeast-2.amazonaws.com/chatbot_model.h5"
 response = requests.get(model_url)
 
 
@@ -38,11 +38,10 @@ def load_data():
         word_map = pickle.load(f)
 
     # 임시 파일로 모델 저장
-    with tempfile.NamedTemporaryFile(delete=True) as tmp_file:
+    with tempfile.NamedTemporaryFile(delete=True, suffix='.h5') as tmp_file:
         tmp_file.write(response.content)
         tmp_file.flush()
         lstm_model = load_model(tmp_file.name)
-        return organized_data, tokenizer, word_map, lstm_model
 
 organized_data, tokenizer, word_map, lstm_model = load_data()
 
