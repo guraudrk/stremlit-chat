@@ -16,6 +16,7 @@ import matplotlib.pyplot as plt
 import re
 import pickle
 import streamlit as st
+from konlpy.tag import Kkma
 
 
 # 모델 및 데이터 로드-캐시를 사용해서 중복 로드를 막는다.
