@@ -42,6 +42,7 @@ def load_data():
         tmp_file.write(response.content)
         tmp_file.flush()
         lstm_model = load_model(tmp_file.name)
+    return organized_data, tokenizer, word_map, lstm_model
 
 organized_data, tokenizer, word_map, lstm_model = load_data()
 
