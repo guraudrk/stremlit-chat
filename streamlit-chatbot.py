@@ -18,18 +18,22 @@ import pickle
 import streamlit as st
 
 
-# 모델 및 데이터 로드
-with open('organized_data.pickle', 'rb') as f:
-    organized_data = pickle.load(f)
+# 모델 및 데이터 로드-캐시를 사용해서 중복 로드를 막는다.
+@st.cache_resource
+def load_data():
+    with open('organized_data.pickle', 'rb') as f:
+        organized_data = pickle.load(f)
 
-with open('tokenizer.pickle', 'rb') as f:
-    tokenizer = pickle.load(f)
+    with open('tokenizer.pickle', 'rb') as f:
+        tokenizer = pickle.load(f)
 
-with open('word_map.pickle', 'rb') as f:
-    word_map = pickle.load(f)
+    with open('word_map.pickle', 'rb') as f:
+        word_map = pickle.load(f)
 
-lstm_model = load_model('chatbot_model.keras')
+    lstm_model = load_model('chatbot_model.keras')
+    return organized_data, tokenizer, word_map, lstm_model
 
+organized_data, tokenizer, word_map, lstm_model = load_data()
 
 
 
