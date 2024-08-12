@@ -51,33 +51,32 @@ def preprocess_text(text):
 
 
 
-#코사인 유사도를 이용해서 질문과 유사한 데이터를 q배열에서 찾는 함수이다.
-def find_similar_answer(question, data, vectorizer, lstm_model, tokenizer,threshold=1.0): #여기서 threshold는 한계점이라는 뜻이며, 정확도가 일정 수준 이하이면 질문을 이해할 수 없다는 답변을 출력한다.
-    okt = Okt() #konlpy의 okt 사용
-    question = preprocess_text(question) #질문을  okt를 사용해서 전처리한다. 
-    question_vec = vectorizer.transform([question]) #질문을 TF-IDF 벡터화한다. 이를 통해 유사도를 계산할 준비를 한다. 
-    question_seq = tokenizer.texts_to_sequences([question])# 질문을 시퀀스로 변환한다.
-    question_seq = pad_sequences(question_seq, maxlen=model.input_shape[1])# 패딩 처리.
+# 코사인 유사도를 이용해서 질문과 유사한 데이터를 q배열에서 찾는 함수이다.
+def find_similar_answer(question, data, vectorizer, lstm_model, tokenizer, threshold=1.0):
+    kkma = Kkma()  # Kkma를 초기화
+    question = preprocess_text(question)  # 질문을 Kkma를 사용해서 전처리한다.
+    question_vec = vectorizer.transform([question])  # 질문을 TF-IDF 벡터화한다.
+    question_seq = tokenizer.texts_to_sequences([question])  # 질문을 시퀀스로 변환한다.
+    question_seq = pad_sequences(question_seq, maxlen=lstm_model.input_shape[1])  # 패딩 처리
 
-    max_sim = -1 
-    most_similar_answer = None #가장 유사한 답변을 담을 변수를 초기화한다. 
+    max_sim = -1
+    most_similar_answer = None  # 가장 유사한 답변을 담을 변수를 초기화한다.
 
-    for i, qa in enumerate(data): #qa 배열을 data에 받는다. data는 q도 있고, a도 있기 때문에, enumerate을 통해 받는다. 
-        q = qa['Q'] #qa배열에서 현재의 질문을 추출한다. 
+    for i, qa in enumerate(data):
+        q = qa['Q']
         q_vec = vectorizer.transform([preprocess_text(q)])  # 질문을 전처리한 뒤, TF-IDF 벡터화한다.
-        sim = cosine_similarity(question_vec, q_vec)[0][0] #입력 질문과 데이터 질문 사이의 코사인 유사도를 계산한다. 
+        sim = cosine_similarity(question_vec, q_vec)[0][0]  # 입력 질문과 데이터 질문 사이의 코사인 유사도를 계산한다.
 
-        q_seq = tokenizer.texts_to_sequences([preprocess_text(q)])  # 질문 전처리한뒤, 시퀀스를 패딩한다.(데이터에 특정 값을 채워서 데이터의 크기를 조정하는 것)
-        q_seq = pad_sequences(q_seq, maxlen=question_seq.shape[1]) #시퀀스를 패딩한다. shape[1]은 시퀀스의 길이를 나타낸다.
+        q_seq = tokenizer.texts_to_sequences([preprocess_text(q)])  # 질문 전처리한 뒤, 시퀀스를 패딩한다.
+        q_seq = pad_sequences(q_seq, maxlen=question_seq.shape[1])  # 시퀀스를 패딩한다.
 
-        lstm_sim = model.predict([question_seq, q_seq])  # LSTM을 통해 입력 질문 시퀀스와 데이터 질문 시퀀스 간의 유사도를 예측한다.
+        lstm_sim = lstm_model.predict([question_seq, q_seq])  # LSTM을 통해 입력 질문 시퀀스와 데이터 질문 시퀀스 간의 유사도를 예측한다.
         avg_sim = (sim + lstm_sim.mean()) / 2  # lstm_sim의 평균 값을 사용
-        print(avg_sim)#입력 질문 시퀀스와 데이터 질문 시퀀스 간의 유사도를 예측한 값을 프린트한다.
 
         # numpy 배열로 비교
-        if np.any(avg_sim > max_sim): #np.any는 조건을 만족하는지 확인한다.
-            max_sim = avg_sim #지금 유사도가 기존의 max_sim보다 크면 값을 새로 업데이트 한다.
-            most_similar_answer = qa['A'] if max_sim >= threshold else "그 질문은 이해할 수 없다네. 가엽고 딱한 자로다!" #이에 따라 가장 유사한 답변을 업데이트 한다.
+        if np.any(avg_sim > max_sim):
+            max_sim = avg_sim
+            most_similar_answer = qa['A'] if max_sim >= threshold else "그 질문은 이해할 수 없다네. 가엽고 딱한 자로다!"  # 이에 따라 가장 유사한 답변을 업데이트 한다.
 
     return most_similar_answer
 
