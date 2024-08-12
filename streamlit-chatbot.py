@@ -17,6 +17,12 @@ import re
 import pickle
 import streamlit as st
 from konlpy.tag import Kkma
+import tempfile
+
+
+# S3 URL로 모델 다운로드
+model_url = "https://aikingsejong.s3.ap-northeast-2.amazonaws.com/chatbot_model.keras"
+response = requests.get(model_url)
 
 
 # 모델 및 데이터 로드-캐시를 사용해서 중복 로드를 막는다.
@@ -31,8 +37,12 @@ def load_data():
     with open('word_map.pickle', 'rb') as f:
         word_map = pickle.load(f)
 
-    lstm_model = load_model('chatbot_model.keras')
-    return organized_data, tokenizer, word_map, lstm_model
+    # 임시 파일로 모델 저장
+    with tempfile.NamedTemporaryFile(delete=True) as tmp_file:
+        tmp_file.write(response.content)
+        tmp_file.flush()
+        lstm_model = load_model(tmp_file.name)
+        return organized_data, tokenizer, word_map, lstm_model
 
 organized_data, tokenizer, word_map, lstm_model = load_data()
 
