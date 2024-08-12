@@ -27,29 +27,30 @@ def download_model():
 # 데이터 로드
 @st.cache_resource
 def load_data():
-    with open('organized_data.pickle', 'rb') as f:
-        organized_data = pickle.load(f)
-
-    with open('tokenizer.pickle', 'rb') as f:
-        tokenizer = pickle.load(f)
-
-    with open('word_map.pickle', 'rb') as f:
-        word_map = pickle.load(f)
-
-    with open('vectorizer.pickle', 'rb') as f:  # Vectorizer 로드
-        vectorizer = pickle.load(f)
-
-    model_file = download_model()
     try:
+        with open('organized_data.pickle', 'rb') as f:
+            organized_data = pickle.load(f)
+
+        with open('tokenizer.pickle', 'rb') as f:
+            tokenizer = pickle.load(f)
+
+        with open('word_map.pickle', 'rb') as f:
+            word_map = pickle.load(f)
+
+        with open('vectorizer.pickle', 'rb') as f:  # Vectorizer 로드
+            vectorizer = pickle.load(f)
+
+        model_file = download_model()
         lstm_model = load_model(model_file)
+        return organized_data, tokenizer, word_map, vectorizer, lstm_model
+
     except Exception as e:
-        st.error(f"모델을 로드하는 데 실패했습니다: {e}")
+        st.error(f"데이터를 로드하는 데 실패했습니다: {e}")
         return None, None, None, None, None
-    return organized_data, tokenizer, word_map, vectorizer, lstm_model
 
-organized_data, tokenizer, word_map,tokenizer, lstm_model = load_data()
+organized_data, tokenizer, word_map, vectorizer, lstm_model = load_data()
 
-if not all([organized_data, tokenizer, word_map, lstm_model]):
+if not all([organized_data, tokenizer, word_map, vectorizer, lstm_model]):
     st.stop()
 
 st.title('AI 세종대왕과 대화하기')
@@ -113,7 +114,7 @@ def add_dane_suffix(text):
     return ' '.join(new_sentences)
 
 if user_question:
-    answer = find_similar_answer(user_question, organized_data, tokenizer, lstm_model, tokenizer)
+    answer = find_similar_answer(user_question, organized_data, vectorizer, lstm_model, tokenizer)
 
     if answer:
         transformed_answer = replace_words(answer, word_map)
