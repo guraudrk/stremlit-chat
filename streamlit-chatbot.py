@@ -36,15 +36,18 @@ def load_data():
     with open('word_map.pickle', 'rb') as f:
         word_map = pickle.load(f)
 
+    with open('vectorizer.pickle', 'rb') as f:  # Vectorizer 로드
+        vectorizer = pickle.load(f)
+
     model_file = download_model()
     try:
         lstm_model = load_model(model_file)
     except Exception as e:
         st.error(f"모델을 로드하는 데 실패했습니다: {e}")
-        return None, None, None, None
-    return organized_data, tokenizer, word_map, lstm_model
+        return None, None, None, None, None
+    return organized_data, tokenizer, word_map, vectorizer, lstm_model
 
-organized_data, tokenizer, word_map, lstm_model = load_data()
+organized_data, tokenizer, word_map,tokenizer, lstm_model = load_data()
 
 if not all([organized_data, tokenizer, word_map, lstm_model]):
     st.stop()
