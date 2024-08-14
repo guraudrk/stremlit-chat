@@ -62,7 +62,7 @@ def preprocess_text(text):
     return ' '.join(tokens)
 
 #만약 organized_data에 알맞는 질문을 한 것 같은데, 답변을 찾지 못했다는 이야기가 많이 나오면 임계값(threshold)을 잘 조절하면 된다.
-def find_similar_answer(question, data, vectorizer, lstm_model, tokenizer, threshold=0.5):
+def find_similar_answer(question, data, vectorizer, lstm_model, tokenizer, threshold=0.3):
     question = preprocess_text(question)
     question_vec = vectorizer.transform([question])
     question_seq = tokenizer.texts_to_sequences([question])
@@ -96,20 +96,23 @@ def replace_words(text, word_map):
 def add_dane_suffix(text):
     sentences = re.split(r'([.?!])', text)
     new_sentences = []
+    
+    # 종결 어미들을 하나의 정규식 패턴으로 정의
+    ending_pattern = re.compile(r'(다|까|니|라|냐|는가|나요)$')
 
     for i in range(0, len(sentences) - 1, 2):
         sentence = sentences[i].strip()
         punctuation = sentences[i + 1]
         if sentence:
-            if sentence.endswith(('다', '까', '니', '라', '냐', '는가', '나요')):
-                sentence = sentence[:-1]
+            # 정규식으로 종결 어미 제거
+            sentence = ending_pattern.sub('', sentence)
             new_sentences.append(sentence + '다네' + punctuation)
 
+    # 홀수 개 문장이 있을 때 마지막 문장 처리
     if len(sentences) % 2 != 0:
         sentence = sentences[-1].strip()
         if sentence:
-            if sentence.endswith(('다', '까', '니', '라', '냐', '는가', '나요')):
-                sentence = sentence[:-1]
+            sentence = ending_pattern.sub('', sentence)
             new_sentences.append(sentence + '다네')
 
     return ' '.join(new_sentences)
