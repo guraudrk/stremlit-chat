@@ -53,9 +53,21 @@ organized_data, tokenizer, word_map, vectorizer, lstm_model = load_data()
 if not all([organized_data, tokenizer, word_map, vectorizer, lstm_model]):
     st.stop()
 
+# 상단에 세종대왕 이미지 추가
+st.markdown("""
+    <div style='text-align: center;'>
+        <img src='https://your-github-repo-path/sejong.jpg' width='200'>
+    </div>
+""", unsafe_allow_html=True)
+
 st.title('AI 세종대왕과 대화하기')
 
-user_question = st.text_input('질문을 입력하세요: ')
+# 사용자 질문 입력
+user_question = st.text_input('질문을 입력하세요:', '')
+
+# 대화 내역을 저장할 리스트
+if 'chat_history' not in st.session_state:
+    st.session_state.chat_history = []
 
 def preprocess_text(text):
     tokens = word_tokenize(text)
@@ -83,7 +95,6 @@ def find_similar_answer(question, data, vectorizer, lstm_model, tokenizer, thres
 
         if avg_sim > max_sim:
             max_sim = avg_sim
-            # 임계값보다 높은 경우에만 답변을 업데이트
             if max_sim >= threshold:
                 most_similar_answer = qa['A']
 
@@ -97,7 +108,7 @@ def replace_words(text, word_map):
 def add_dane_suffix(text):
     sentences = re.split(r'([.?!])', text)
     new_sentences = []
-    
+
     # 종결 어미들을 하나의 정규식 패턴으로 정의
     ending_pattern = re.compile(r'(다|까|니|라|냐|는가|나요)$')
 
@@ -105,12 +116,10 @@ def add_dane_suffix(text):
         sentence = sentences[i].strip()
         punctuation = sentences[i + 1]
         if sentence:
-            # 종결 어미 제거
+            # 정규식으로 종결 어미 제거
             sentence = ending_pattern.sub('', sentence)
-            # 문장 부호를 제외한 부분에 '다네' 추가
             new_sentences.append(sentence + '다네' + punctuation)
 
-    # 홀수 개 문장이 있을 때 마지막 문장 처리
     if len(sentences) % 2 != 0:
         sentence = sentences[-1].strip()
         if sentence:
@@ -119,13 +128,28 @@ def add_dane_suffix(text):
 
     return ' '.join(new_sentences)
 
+# 대화 기록을 말풍선 스타일로 출력
+def display_chat_history(chat_history):
+    for i, (user, bot) in enumerate(chat_history):
+        st.markdown(f"""
+        <div style='background-color: #e6f7ff; padding: 10px; border-radius: 10px; margin: 5px 0;'>
+            <strong>사용자:</strong> {user}
+        </div>
+        <div style='background-color: #f9f9f9; padding: 10px; border-radius: 10px; margin: 5px 0;'>
+            <strong>세종대왕:</strong> {bot}
+        </div>
+        """, unsafe_allow_html=True)
+
 if user_question:
     answer = find_similar_answer(user_question, organized_data, vectorizer, lstm_model, tokenizer)
 
     # "적절한 답변을 찾지 못했습니다" 메시지에 '다네' 접미사를 붙이지 않음
     if answer == "적절한 답변을 찾지 못했습니다. 다른 질문을 해보세요.":
-        st.write("답변:", answer)
+        st.session_state.chat_history.append((user_question, answer))
     else:
         transformed_answer = replace_words(answer, word_map)
         final_answer = add_dane_suffix(transformed_answer)
-        st.write("답변:", final_answer)
+        st.session_state.chat_history.append((user_question, final_answer))
+
+# 대화 내역 출력
+display_chat_history(st.session_state.chat_history)
