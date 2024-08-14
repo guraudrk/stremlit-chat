@@ -61,7 +61,6 @@ def preprocess_text(text):
     tokens = word_tokenize(text)
     return ' '.join(tokens)
 
-#만약 organized_data에 알맞는 질문을 한 것 같은데, 답변을 찾지 못했다는 이야기가 많이 나오면 임계값(threshold)을 잘 조절하면 된다.
 def find_similar_answer(question, data, vectorizer, lstm_model, tokenizer, threshold=0.3):
     question = preprocess_text(question)
     question_vec = vectorizer.transform([question])
@@ -84,7 +83,9 @@ def find_similar_answer(question, data, vectorizer, lstm_model, tokenizer, thres
 
         if avg_sim > max_sim:
             max_sim = avg_sim
-            most_similar_answer = qa['A'] if max_sim >= threshold else most_similar_answer
+            # 임계값보다 높은 경우에만 답변을 업데이트
+            if max_sim >= threshold:
+                most_similar_answer = qa['A']
 
     return most_similar_answer
 
@@ -121,9 +122,10 @@ def add_dane_suffix(text):
 if user_question:
     answer = find_similar_answer(user_question, organized_data, vectorizer, lstm_model, tokenizer)
 
-    if answer:
+    # "적절한 답변을 찾지 못했습니다" 메시지에 '다네' 접미사를 붙이지 않음
+    if answer == "적절한 답변을 찾지 못했습니다. 다른 질문을 해보세요.":
+        st.write("답변:", answer)
+    else:
         transformed_answer = replace_words(answer, word_map)
         final_answer = add_dane_suffix(transformed_answer)
         st.write("답변:", final_answer)
-    else:
-        st.write("유사한 답변을 찾을 수 없습니다.")
