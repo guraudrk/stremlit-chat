@@ -104,8 +104,9 @@ def add_dane_suffix(text):
         sentence = sentences[i].strip()
         punctuation = sentences[i + 1]
         if sentence:
-            # 정규식으로 종결 어미 제거
+            # 종결 어미 제거
             sentence = ending_pattern.sub('', sentence)
+            # 문장 부호를 제외한 부분에 '다네' 추가
             new_sentences.append(sentence + '다네' + punctuation)
 
     # 홀수 개 문장이 있을 때 마지막 문장 처리
