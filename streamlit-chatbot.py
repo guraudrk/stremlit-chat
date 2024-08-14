@@ -56,7 +56,7 @@ if not all([organized_data, tokenizer, word_map, vectorizer, lstm_model]):
 # 상단에 세종대왕 이미지 추가
 st.markdown("""
     <div style='text-align: center;'>
-        <img src='https://your-github-repo-path/sejong.jpg' width='200'>
+<img src='https://raw.githubusercontent.com/guraudrk/stremlit-chat/main/sejong.jpg' width='200'>
     </div>
 """, unsafe_allow_html=True)
 
