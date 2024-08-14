@@ -61,14 +61,15 @@ def preprocess_text(text):
     tokens = word_tokenize(text)
     return ' '.join(tokens)
 
-def find_similar_answer(question, data, vectorizer, lstm_model, tokenizer, threshold=1.0):
+#만약 organized_data에 알맞는 질문을 한 것 같은데, 답변을 찾지 못했다는 이야기가 많이 나오면 임계값(threshold)을 잘 조절하면 된다.
+def find_similar_answer(question, data, vectorizer, lstm_model, tokenizer, threshold=0.5):
     question = preprocess_text(question)
     question_vec = vectorizer.transform([question])
     question_seq = tokenizer.texts_to_sequences([question])
     question_seq = pad_sequences(question_seq, maxlen=lstm_model.input_shape[1])
 
     max_sim = -1
-    most_similar_answer = "그 질문은 이해할 수 없다네. 가엽고 딱한 자로다!"
+    most_similar_answer = "적절한 답변을 찾지 못했습니다. 다른 질문을 해보세요."
 
     for qa in data:
         q = qa['Q']
