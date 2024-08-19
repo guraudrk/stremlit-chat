@@ -78,25 +78,9 @@ if st.button('예시 질문 보기'):
     st.session_state.show_examples = not st.session_state.show_examples
 
 if st.session_state.show_examples:
-    st.markdown("""
-        <div id="popup" class="popup">
-            <div class="popup-content">
-                <span class="close-btn" onclick="document.getElementById('popup').style.display='none';">&times;</span>
-                <h2>예시 질문 목록</h2>
-                <ul>
-                    {0}
-                </ul>
-            </div>
-        </div>
-        <script>
-            document.addEventListener('click', function(event) {
-                var popup = document.getElementById('popup');
-                if (popup.style.display === 'block' && !popup.contains(event.target) && !event.target.classList.contains('stButton')) {
-                    popup.style.display = 'none';
-                }
-            });
-        </script>
-    """.format(''.join(f"<li>{qa['Q']}</li>" for qa in organized_data)), unsafe_allow_html=True)
+    # 팝업 표시
+    with st.modal("예시 질문 목록", on_close=lambda: st.session_state.update({'show_examples': False})):
+        st.write("<ul>" + "".join(f"<li>{qa['Q']}</li>" for qa in organized_data) + "</ul>", unsafe_allow_html=True)
 
 # 사용자 질문 입력
 user_question = st.text_input(
