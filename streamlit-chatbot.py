@@ -74,17 +74,14 @@ st.title('AI 세종대왕과 대화하기')
 if 'show_examples' not in st.session_state:
     st.session_state.show_examples = False
 
-def toggle_popup():
-    st.session_state.show_examples = not st.session_state.show_examples
-
 if st.button('예시 질문 보기'):
-    toggle_popup()
+    st.session_state.show_examples = not st.session_state.show_examples
 
 if st.session_state.show_examples:
     st.markdown("""
-        <div class='popup'>
-            <div class='popup-content'>
-                <span class='close-btn' onclick="document.querySelector('.popup').style.display='none';">&times;</span>
+        <div id="popup" class="popup" style="display: block;">
+            <div class="popup-content">
+                <span class="close-btn" onclick="document.getElementById('popup').style.display='none';">&times;</span>
                 <h2>예시 질문 목록</h2>
                 <ul>
                     {0}
