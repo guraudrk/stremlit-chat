@@ -13,6 +13,14 @@ import re
 import nltk
 nltk.download('punkt')
 
+# CSS 파일 로드 함수
+def load_css(file_name):
+    with open(file_name) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+# CSS 파일 적용
+load_css('style.css')
+
 # S3 URL로 모델 다운로드
 @st.cache_resource
 def download_model():
@@ -56,7 +64,7 @@ if not all([organized_data, tokenizer, word_map, vectorizer, lstm_model]):
 # 상단에 세종대왕 이미지 추가
 st.markdown("""
     <div style='text-align: center;'>
-<img src='https://raw.githubusercontent.com/guraudrk/stremlit-chat/main/sejong.jpg' width='200'>
+        <img src='https://raw.githubusercontent.com/guraudrk/stremlit-chat/main/sejong.jpg' width='200'>
     </div>
 """, unsafe_allow_html=True)
 
@@ -132,10 +140,10 @@ def add_dane_suffix(text):
 def display_chat_history(chat_history):
     for i, (user, bot) in enumerate(chat_history):
         st.markdown(f"""
-        <div style='background-color: #e6f7ff; padding: 10px; border-radius: 10px; margin: 5px 0;'>
+        <div class='chat-bubble user'>
             <strong>사용자:</strong> {user}
         </div>
-        <div style='background-color: #f9f9f9; padding: 10px; border-radius: 10px; margin: 5px 0;'>
+        <div class='chat-bubble bot'>
             <strong>세종대왕:</strong> {bot}
         </div>
         """, unsafe_allow_html=True)
