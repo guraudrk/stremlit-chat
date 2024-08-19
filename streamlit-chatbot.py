@@ -78,8 +78,9 @@ if st.button('예시 질문 보기'):
     st.session_state.show_examples = not st.session_state.show_examples
 
 if st.session_state.show_examples:
+    questions = ''.join(f"<li>{qa['Q']}</li>" for qa in organized_data)
     # 팝업 창과 오버레이 생성
-    st.markdown("""
+    st.markdown(f"""
         <div id='example-modal' style='position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
                     background-color: white; padding: 20px; border-radius: 10px; 
                     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); z-index: 10; max-height: 70vh; overflow-y: auto;'>
@@ -103,7 +104,7 @@ if st.session_state.show_examples:
                 });
             });
         </script>
-    """.format(questions=''.join(f"<li>{qa['Q']}</li>" for qa in organized_data)), unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
 # 사용자 질문 입력
 user_question = st.text_input(
