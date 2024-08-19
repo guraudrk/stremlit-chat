@@ -70,7 +70,7 @@ st.markdown("""
 
 st.title('AI 세종대왕과 대화하기')
 
-# 예시 질문 보기 버튼 클릭 시 팝업 표시
+# 예시 질문 보기 버튼 클릭 시 팝업 모방
 if 'show_examples' not in st.session_state:
     st.session_state.show_examples = False
 
@@ -78,9 +78,19 @@ if st.button('예시 질문 보기'):
     st.session_state.show_examples = not st.session_state.show_examples
 
 if st.session_state.show_examples:
-    # 팝업 표시
-    with st.modal("예시 질문 목록", on_close=lambda: st.session_state.update({'show_examples': False})):
-        st.write("<ul>" + "".join(f"<li>{qa['Q']}</li>" for qa in organized_data) + "</ul>", unsafe_allow_html=True)
+    st.markdown("""
+        <div style='position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background-color:#fff; padding:20px; border-radius:10px; z-index:10;'>
+            <h3>예시 질문 목록</h3>
+            <ul>
+    """, unsafe_allow_html=True)
+
+    for qa in organized_data:
+        st.markdown(f"<li>{qa['Q']}</li>", unsafe_allow_html=True)
+
+    if st.button('닫기'):
+        st.session_state.show_examples = False
+
+    st.markdown("</ul></div>", unsafe_allow_html=True)
 
 # 사용자 질문 입력
 user_question = st.text_input(
