@@ -85,6 +85,7 @@ if st.session_state.show_examples:
                     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); z-index: 10; max-height: 70vh; overflow-y: auto;'>
             <h3 style='color: black;'>예시 질문 목록</h3>
             <ul id='question-list' style='color: black;'>
+                {questions}
             </ul>
             <button id='close-button' style='margin-top: 20px;'>닫기</button>
         </div>
@@ -92,14 +93,6 @@ if st.session_state.show_examples:
                     background-color: rgba(0, 0, 0, 0.5); z-index: 9;'></div>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                var questionList = document.getElementById('question-list');
-                var questions = """ + str([qa['Q'] for qa in organized_data]) + """;
-                questions.forEach(function(question) {
-                    var li = document.createElement('li');
-                    li.textContent = question;
-                    questionList.appendChild(li);
-                });
-
                 document.getElementById('overlay').addEventListener('click', function() {
                     document.getElementById('example-modal').style.display = 'none';
                     document.getElementById('overlay').style.display = 'none';
@@ -110,7 +103,7 @@ if st.session_state.show_examples:
                 });
             });
         </script>
-    """, unsafe_allow_html=True)
+    """.format(questions=''.join(f"<li>{qa['Q']}</li>" for qa in organized_data)), unsafe_allow_html=True)
 
 # 사용자 질문 입력
 user_question = st.text_input(
