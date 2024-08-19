@@ -1,0 +1,67 @@
+/* style.css */
+
+/* 전체 페이지 배경 및 글꼴 설정 */
+body {
+    background-color: #1e1e2f;
+    color: #f5f6fa;
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* 제목 스타일 */
+h1, h2, h3 {
+    color: #e1e1f5;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+/* 사용자 질문 입력 박스 스타일 */
+.stTextInput > div > input {
+    background-color: #2d2d44;
+    color: #f5f6fa;
+    border: 1px solid #444;
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 16px;
+}
+
+/* 버튼 스타일 */
+.stButton > button {
+    background-color: #ff6f61;
+    color: white;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.stButton > button:hover {
+    background-color: #ff5733;
+}
+
+/* 채팅 기록 말풍선 스타일 */
+.chat-bubble {
+    padding: 10px;
+    border-radius: 10px;
+    margin: 5px 0;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.chat-bubble.user {
+    background-color: #e6f7ff;
+    color: #333;
+}
+
+.chat-bubble.bot {
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+/* 세종대왕 이미지 스타일 */
+img {
+    border-radius: 10px;
+}
