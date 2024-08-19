@@ -97,12 +97,10 @@ if st.session_state.show_examples:
                 document.getElementById('overlay').addEventListener('click', function() {{
                     document.getElementById('example-modal').style.display = 'none';
                     document.getElementById('overlay').style.display = 'none';
-                    window.location.reload();
                 }});
                 document.getElementById('close-button').addEventListener('click', function() {{
                     document.getElementById('example-modal').style.display = 'none';
                     document.getElementById('overlay').style.display = 'none';
-                    window.location.reload();
                 }});
             }});
         </script>
