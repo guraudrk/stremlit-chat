@@ -84,7 +84,7 @@ def show_popup():
     <div id='example-modal' style='position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); z-index: 10; max-height: 70vh; overflow-y: auto;'>
         <h3 style='color: black;'>예시 질문 목록</h3>
         <ul id='question-list' style='color: black;'>{questions}</ul>
-        <p style='color: black; font-weight: bold;'>닫기를 원하시면 버튼을 한번 더 눌러주세요</p>
+        <p style='color: black; font-weight: bold;'>닫기를 원하시면 버튼을 한번 더 눌러주세요.</p>
     </div>
     <div id='overlay' style='position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 5;'></div>
     <script>
