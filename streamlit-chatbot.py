@@ -86,13 +86,19 @@ def show_popup():
         <ul id='question-list' style='color: black;'>{questions}</ul>
         <button id='close-button' style='margin-top: 20px;'>닫기</button>
     </div>
+    <div id='overlay' style='position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 5;'></div>
     <script>
+        document.getElementById('overlay').addEventListener('click', function() {{
+            document.getElementById('example-modal').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+        }});
         document.getElementById('close-button').addEventListener('click', function() {{
-            window.parent.postMessage({{type: 'CLOSE_POPUP'}}, '*');
+            document.getElementById('example-modal').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
         }});
     </script>
     """
-    components.html(html, height=600)
+    components.html(html, height=600, width=600)
 
 if st.session_state.show_examples:
     show_popup()
@@ -192,14 +198,3 @@ if user_question and user_question != '':
 
 # 대화 내역 출력
 display_chat_history(st.session_state.chat_history)
-
-# JavaScript로 팝업 닫기 이벤트 처리
-components.html("""
-    <script>
-        window.addEventListener('message', function(event) {
-            if (event.data.type === 'CLOSE_POPUP') {
-                window.parent.postMessage({type: 'CLOSE_POPUP'}, '*');
-            }
-        });
-    </script>
-""", height=0)
