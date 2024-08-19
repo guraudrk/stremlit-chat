@@ -70,11 +70,17 @@ st.markdown("""
 
 st.title('AI 세종대왕과 대화하기')
 
-# 상단 우측에 예시 질문 버튼 추가
-if st.button('예시 질문 보기'):
-    st.session_state.show_examples = not st.session_state.get('show_examples', False)
+# 예시 질문 보기 버튼 클릭 시 팝업 표시
+if 'show_examples' not in st.session_state:
+    st.session_state.show_examples = False
 
-if st.session_state.get('show_examples', False):
+def toggle_popup():
+    st.session_state.show_examples = not st.session_state.show_examples
+
+if st.button('예시 질문 보기'):
+    toggle_popup()
+
+if st.session_state.show_examples:
     st.markdown("""
         <div class='popup'>
             <div class='popup-content'>
@@ -91,7 +97,7 @@ if st.session_state.get('show_examples', False):
 user_question = st.text_input(
     '질문을 입력하세요:', 
     '',
-    placeholder='원활한 질문을 위해서는 우측 상단의 버튼으로 예시 질문을 확인해주세요'
+    placeholder='원활한 질문을 위해서는 상단의 버튼으로 예시 질문을 확인해주세요'
 )
 
 # 대화 내역을 저장할 리스트
