@@ -93,16 +93,16 @@ if st.session_state.show_examples:
         <div id='overlay' style='position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
                     background-color: rgba(0, 0, 0, 0.5); z-index: 9;'></div>
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                document.getElementById('overlay').addEventListener('click', function() {
+            document.addEventListener('DOMContentLoaded', function() {{
+                document.getElementById('overlay').addEventListener('click', function() {{
                     document.getElementById('example-modal').style.display = 'none';
                     document.getElementById('overlay').style.display = 'none';
-                });
-                document.getElementById('close-button').addEventListener('click', function() {
+                }});
+                document.getElementById('close-button').addEventListener('click', function() {{
                     document.getElementById('example-modal').style.display = 'none';
                     document.getElementById('overlay').style.display = 'none';
-                });
-            });
+                }});
+            }});
         </script>
     """, unsafe_allow_html=True)
 
