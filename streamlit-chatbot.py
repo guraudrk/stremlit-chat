@@ -78,19 +78,35 @@ if st.button('예시 질문 보기'):
     st.session_state.show_examples = not st.session_state.show_examples
 
 if st.session_state.show_examples:
+    # 팝업 창과 오버레이 생성
     st.markdown("""
-        <div style='position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background-color:#fff; padding:20px; border-radius:10px; z-index:10;'>
-            <h3>예시 질문 목록</h3>
-            <ul>
+        <div id='example-modal' style='position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                    background-color: white; padding: 20px; border-radius: 10px; 
+                    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); z-index: 10;'>
+            <h3 style='color: black;'>예시 질문 목록</h3>
+            <ul style='color: black;'>
     """, unsafe_allow_html=True)
 
     for qa in organized_data:
         st.markdown(f"<li>{qa['Q']}</li>", unsafe_allow_html=True)
 
-    if st.button('닫기'):
-        st.session_state.show_examples = False
-
-    st.markdown("</ul></div>", unsafe_allow_html=True)
+    st.markdown("""
+            </ul>
+            <button id='close-button' style='margin-top: 20px;'>닫기</button>
+        </div>
+        <div id='overlay' style='position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                    background-color: rgba(0, 0, 0, 0.5); z-index: 9;'></div>
+        <script>
+            document.getElementById('overlay').addEventListener('click', function() {
+                document.getElementById('example-modal').style.display = 'none';
+                document.getElementById('overlay').style.display = 'none';
+            });
+            document.getElementById('close-button').addEventListener('click', function() {
+                document.getElementById('example-modal').style.display = 'none';
+                document.getElementById('overlay').style.display = 'none';
+            });
+        </script>
+    """, unsafe_allow_html=True)
 
 # 사용자 질문 입력
 user_question = st.text_input(
