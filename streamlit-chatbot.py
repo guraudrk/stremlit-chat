@@ -81,16 +81,12 @@ if st.button('예시 질문 보기'):
 def show_popup():
     questions = ''.join(f"<li>{qa['Q']}</li>" for qa in organized_data)
     html = f"""
-    <div id='overlay' style='position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 9;'></div>
     <div id='example-modal' style='position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); z-index: 10; max-height: 70vh; overflow-y: auto;'>
         <h3 style='color: black;'>예시 질문 목록</h3>
         <ul id='question-list' style='color: black;'>{questions}</ul>
         <button id='close-button' style='margin-top: 20px;'>닫기</button>
     </div>
     <script>
-        document.getElementById('overlay').addEventListener('click', function() {{
-            window.parent.postMessage({{type: 'CLOSE_POPUP'}}, '*');
-        }});
         document.getElementById('close-button').addEventListener('click', function() {{
             window.parent.postMessage({{type: 'CLOSE_POPUP'}}, '*');
         }});
