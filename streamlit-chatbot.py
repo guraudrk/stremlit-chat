@@ -74,10 +74,24 @@ st.title('AI 세종대왕과 대화하기')
 if st.button('예시 질문 보기'):
     st.session_state.show_examples = not st.session_state.get('show_examples', False)
 
+if st.session_state.get('show_examples', False):
+    st.markdown("""
+        <div class='popup'>
+            <div class='popup-content'>
+                <span class='close-btn' onclick="document.querySelector('.popup').style.display='none';">&times;</span>
+                <h2>예시 질문 목록</h2>
+                <ul>
+                    {0}
+                </ul>
+            </div>
+        </div>
+    """.format(''.join(f"<li>{qa['Q']}</li>" for qa in organized_data)), unsafe_allow_html=True)
+
 # 사용자 질문 입력
 user_question = st.text_input(
     '질문을 입력하세요:', 
-    '원활한 질문을 위해서는 우측 상단의 버튼으로 예시 질문을 확인해주세요'
+    '',
+    placeholder='원활한 질문을 위해서는 우측 상단의 버튼으로 예시 질문을 확인해주세요'
 )
 
 # 대화 내역을 저장할 리스트
@@ -155,56 +169,7 @@ def display_chat_history(chat_history):
         </div>
         """, unsafe_allow_html=True)
 
-# 예시 질문 목록 팝업을 출력하는 함수
-def show_example_popup():
-    st.markdown("""
-        <div id="example-popup" class="popup">
-            <div class="popup-content">
-                <span class="close-btn" onclick="document.getElementById('example-popup').style.display='none'">&times;</span>
-                <h2>예시 질문</h2>
-                <ul>
-                    {% for qa in organized_data %}
-                        <li>{{ qa['Q'] }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
-        <script>
-            if (document.getElementById('example-popup')) {
-                document.getElementById('example-popup').style.display = 'flex';
-            }
-        </script>
-    """, unsafe_allow_html=True)
-
-# 타이핑 애니메이션 함수
-def type_text():
-    st.markdown("""
-        <style>
-        #intro-text {
-            opacity: 1;
-            transition: opacity 1s ease;
-        }
-        </style>
-        <p id="intro-text">원활한 질문을 위해서는 우측 상단의 버튼으로 예시 질문을 확인해주세요</p>
-        <script>
-            let text = "원활한 질문을 위해서는 우측 상단의 버튼으로 예시 질문을 확인해주세요";
-            let i = 0;
-            let speed = 50;
-            let introTextElement = document.getElementById('intro-text');
-            function typeWriter() {
-                if (i < text.length) {
-                    introTextElement.innerHTML += text.charAt(i);
-                    i++;
-                    setTimeout(typeWriter, speed);
-                } else {
-                    setTimeout(() => { introTextElement.style.opacity = 0; }, 3000);
-                }
-            }
-            typeWriter();
-        </script>
-    """, unsafe_allow_html=True)
-
-if user_question and user_question != '원활한 질문을 위해서는 우측 상단의 버튼으로 예시 질문을 확인해주세요':
+if user_question and user_question != '':
     answer = find_similar_answer(user_question, organized_data, vectorizer, lstm_model, tokenizer)
 
     # "적절한 답변을 찾지 못했습니다" 메시지에 '다네' 접미사를 붙이지 않음
@@ -217,9 +182,3 @@ if user_question and user_question != '원활한 질문을 위해서는 우측 �
 
 # 대화 내역 출력
 display_chat_history(st.session_state.chat_history)
-
-# 예시 질문 목록이 표시될 때 팝업 창을 표시
-if st.session_state.get('show_examples', False):
-    show_example_popup()
-else:
-    type_text()
