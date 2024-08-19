@@ -8,6 +8,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 import tempfile
 import re
+import streamlit.components.v1 as components
 
 # nltk 다운로드 (필요시 실행)
 import nltk
@@ -77,34 +78,28 @@ if 'show_examples' not in st.session_state:
 if st.button('예시 질문 보기'):
     st.session_state.show_examples = not st.session_state.show_examples
 
-if st.session_state.show_examples:
+def show_popup():
     questions = ''.join(f"<li>{qa['Q']}</li>" for qa in organized_data)
-    # 팝업 창과 오버레이 생성
-    st.markdown(f"""
-        <div id='example-modal' style='position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-                    background-color: white; padding: 20px; border-radius: 10px; 
-                    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); z-index: 10; max-height: 70vh; overflow-y: auto;'>
-            <h3 style='color: black;'>예시 질문 목록</h3>
-            <ul id='question-list' style='color: black;'>
-                {questions}
-            </ul>
-            <button id='close-button' style='margin-top: 20px;'>닫기</button>
-        </div>
-        <div id='overlay' style='position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-                    background-color: rgba(0, 0, 0, 0.5); z-index: 9;'></div>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {{
-                document.getElementById('overlay').addEventListener('click', function() {{
-                    document.getElementById('example-modal').style.display = 'none';
-                    document.getElementById('overlay').style.display = 'none';
-                }});
-                document.getElementById('close-button').addEventListener('click', function() {{
-                    document.getElementById('example-modal').style.display = 'none';
-                    document.getElementById('overlay').style.display = 'none';
-                }});
-            }});
-        </script>
-    """, unsafe_allow_html=True)
+    html = f"""
+    <div id='overlay' style='position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 9;'></div>
+    <div id='example-modal' style='position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); z-index: 10; max-height: 70vh; overflow-y: auto;'>
+        <h3 style='color: black;'>예시 질문 목록</h3>
+        <ul id='question-list' style='color: black;'>{questions}</ul>
+        <button id='close-button' style='margin-top: 20px;'>닫기</button>
+    </div>
+    <script>
+        document.getElementById('overlay').addEventListener('click', function() {{
+            window.parent.postMessage({{type: 'CLOSE_POPUP'}}, '*');
+        }});
+        document.getElementById('close-button').addEventListener('click', function() {{
+            window.parent.postMessage({{type: 'CLOSE_POPUP'}}, '*');
+        }});
+    </script>
+    """
+    components.html(html, height=600)
+
+if st.session_state.show_examples:
+    show_popup()
 
 # 사용자 질문 입력
 user_question = st.text_input(
@@ -201,3 +196,14 @@ if user_question and user_question != '':
 
 # 대화 내역 출력
 display_chat_history(st.session_state.chat_history)
+
+# JavaScript로 팝업 닫기 이벤트 처리
+components.html("""
+    <script>
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'CLOSE_POPUP') {
+                window.parent.postMessage({type: 'CLOSE_POPUP'}, '*');
+            }
+        });
+    </script>
+""", height=0)
