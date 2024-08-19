@@ -79,7 +79,7 @@ if st.button('예시 질문 보기'):
 
 if st.session_state.show_examples:
     st.markdown("""
-        <div id="popup" class="popup" style="display: block;">
+        <div id="popup" class="popup">
             <div class="popup-content">
                 <span class="close-btn" onclick="document.getElementById('popup').style.display='none';">&times;</span>
                 <h2>예시 질문 목록</h2>
@@ -88,6 +88,14 @@ if st.session_state.show_examples:
                 </ul>
             </div>
         </div>
+        <script>
+            document.addEventListener('click', function(event) {
+                var popup = document.getElementById('popup');
+                if (popup.style.display === 'block' && !popup.contains(event.target) && !event.target.classList.contains('stButton')) {
+                    popup.style.display = 'none';
+                }
+            });
+        </script>
     """.format(''.join(f"<li>{qa['Q']}</li>" for qa in organized_data)), unsafe_allow_html=True)
 
 # 사용자 질문 입력
