@@ -70,8 +70,20 @@ st.markdown("""
 
 st.title('AI 세종대왕과 대화하기')
 
+# 상단 우측에 예시 질문 버튼 추가
+if st.button('예시 질문 보기'):
+    st.session_state.show_examples = not st.session_state.get('show_examples', False)
+
+if st.session_state.get('show_examples', False):
+    st.subheader('예시 질문 목록')
+    for qa in organized_data:
+        st.write(f"- {qa['Q']}")
+
 # 사용자 질문 입력
-user_question = st.text_input('질문을 입력하세요:', '')
+user_question = st.text_input(
+    '질문을 입력하세요:', 
+    '원활한 질문을 위해서는 우측 상단의 버튼으로 예시 질문을 확인해주세요'
+)
 
 # 대화 내역을 저장할 리스트
 if 'chat_history' not in st.session_state:
@@ -148,7 +160,7 @@ def display_chat_history(chat_history):
         </div>
         """, unsafe_allow_html=True)
 
-if user_question:
+if user_question and user_question != '원활한 질문을 위해서는 우측 상단의 버튼으로 예시 질문을 확인해주세요':
     answer = find_similar_answer(user_question, organized_data, vectorizer, lstm_model, tokenizer)
 
     # "적절한 답변을 찾지 못했습니다" 메시지에 '다네' 접미사를 붙이지 않음
