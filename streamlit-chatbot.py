@@ -82,28 +82,32 @@ if st.session_state.show_examples:
     st.markdown("""
         <div id='example-modal' style='position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
                     background-color: white; padding: 20px; border-radius: 10px; 
-                    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); z-index: 10;'>
+                    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); z-index: 10; max-height: 70vh; overflow-y: auto;'>
             <h3 style='color: black;'>예시 질문 목록</h3>
-            <ul style='color: black;'>
-    """, unsafe_allow_html=True)
-
-    for qa in organized_data:
-        st.markdown(f"<li>{qa['Q']}</li>", unsafe_allow_html=True)
-
-    st.markdown("""
+            <ul id='question-list' style='color: black;'>
             </ul>
             <button id='close-button' style='margin-top: 20px;'>닫기</button>
         </div>
         <div id='overlay' style='position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
                     background-color: rgba(0, 0, 0, 0.5); z-index: 9;'></div>
         <script>
-            document.getElementById('overlay').addEventListener('click', function() {
-                document.getElementById('example-modal').style.display = 'none';
-                document.getElementById('overlay').style.display = 'none';
-            });
-            document.getElementById('close-button').addEventListener('click', function() {
-                document.getElementById('example-modal').style.display = 'none';
-                document.getElementById('overlay').style.display = 'none';
+            document.addEventListener('DOMContentLoaded', function() {
+                var questionList = document.getElementById('question-list');
+                var questions = """ + str([qa['Q'] for qa in organized_data]) + """;
+                questions.forEach(function(question) {
+                    var li = document.createElement('li');
+                    li.textContent = question;
+                    questionList.appendChild(li);
+                });
+
+                document.getElementById('overlay').addEventListener('click', function() {
+                    document.getElementById('example-modal').style.display = 'none';
+                    document.getElementById('overlay').style.display = 'none';
+                });
+                document.getElementById('close-button').addEventListener('click', function() {
+                    document.getElementById('example-modal').style.display = 'none';
+                    document.getElementById('overlay').style.display = 'none';
+                });
             });
         </script>
     """, unsafe_allow_html=True)
