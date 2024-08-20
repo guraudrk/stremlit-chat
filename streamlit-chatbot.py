@@ -86,7 +86,7 @@ def show_popup():
         <ul id='question-list' style='color: black;'>{questions}</ul>
         <p style='color: black; font-weight: bold;'>닫기를 원하시면 버튼을 한번 더 눌러주세요.</p>
     </div>
-    <div id='overlay' style='position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 5;'></div>
+    <div id='overlay' style='position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; background-color: rgba(0, 0, 0, 0.5);'></div>
     <script>
         document.getElementById('overlay').addEventListener('click', function() {{
             document.getElementById('example-modal').style.display = 'none';
