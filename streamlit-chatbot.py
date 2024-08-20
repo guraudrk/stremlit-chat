@@ -91,7 +91,7 @@ def show_popup():
         document.getElementById('overlay').addEventListener('click', function() {{
             document.getElementById('example-modal').style.display = 'none';
             document.getElementById('overlay').style.display = 'none';
-            window.scrollTo(0, 0);
+            document.body.style.overflow = 'auto'; // 페이지 스크롤 복구
         }});
     </script>
     """
