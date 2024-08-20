@@ -8,7 +8,6 @@ from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 import tempfile
 import re
-import streamlit.components.v1 as components
 
 # nltk 다운로드 (필요시 실행)
 import nltk
@@ -71,40 +70,20 @@ st.markdown("""
 
 st.title('AI 세종대왕과 대화하기')
 
-# 예시 질문 보기 버튼 클릭 시 팝업 모방
-if 'show_examples' not in st.session_state:
-    st.session_state.show_examples = False
+# 페이지 하단에 예시 질문 표시하기
+def show_examples_bottom(data):
+    st.markdown('### 예시 질문')
+    questions = [qa['Q'] for qa in data]
+    for question in questions:
+        st.text(question)
 
-if st.button('예시 질문 보기'):
-    st.session_state.show_examples = not st.session_state.show_examples
-
-def show_popup():
-    questions = ''.join(f"<li>{qa['Q']}</li>" for qa in organized_data)
-    html = f"""
-    <div id='example-modal' style='position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); z-index: 10; max-height: 70vh; overflow-y: auto;'>
-        <h3 style='color: black;'>예시 질문 목록</h3>
-        <ul id='question-list' style='color: black;'>{questions}</ul>
-        <p style='color: black; font-weight: bold;'>닫기를 원하시면 버튼을 한번 더 눌러주세요.</p>
-    </div>
-    <div id='overlay' style='position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; background-color: rgba(0, 0, 0, 0.5);'></div>
-    <script>
-        document.getElementById('overlay').addEventListener('click', function() {{
-            document.getElementById('example-modal').style.display = 'none';
-            document.getElementById('overlay').style.display = 'none';
-            document.body.style.overflow = 'auto'; // 페이지 스크롤 복구
-        }});
-    </script>
-    """
-    components.html(html, height=600, width=600)
-
-if st.session_state.show_examples:
-    show_popup()
+show_examples_bottom(organized_data)
 
 # 사용자 질문 입력
 user_question = st.text_input(
     '질문을 입력하세요:', 
     '',
-    placeholder='원활한 질문을 위해서는 상단의 버튼으로 예시 질문을 확인해주세요'
+    placeholder='원활한 질문을 위해 상단의 예시 질문을 확인해주세요'
 )
 
 # 대화 내역을 저장할 리스트
