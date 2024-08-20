@@ -21,21 +21,6 @@ def load_css(file_name):
 # CSS 파일 적용
 load_css('style.css')
 
-# 스타일 수정 함수
-def apply_custom_styles():
-    st.markdown("""
-    <style>
-        .title {
-            color: black;
-        }
-        .sidebar .sidebar-content {
-            color: black;
-        }
-    </style>
-    """, unsafe_allow_html=True)
-
-apply_custom_styles()
-
 # S3 URL로 모델 다운로드
 @st.cache_resource
 def download_model():
@@ -79,7 +64,9 @@ if not all([organized_data, tokenizer, word_map, vectorizer, lstm_model]):
 # 사이드바에 예시 질문 추가하기
 def show_examples_sidebar(data):
     st.sidebar.header('예시 질문')
-    st.sidebar.markdown('<p style="color: black;">'+ '\n'.join([qa['Q'] for qa in data]) +'</p>', unsafe_allow_html=True)
+    questions = [qa['Q'] for qa in data]
+    for question in questions:
+        st.sidebar.text(question)
 
 show_examples_sidebar(organized_data)
 
@@ -90,7 +77,7 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-st.markdown('<h1 class="title">AI 세종대왕과 대화하기</h1>', unsafe_allow_html=True)
+st.title('AI 세종대왕과 대화하기')
 
 # 사용자 질문 입력
 user_question = st.text_input(
