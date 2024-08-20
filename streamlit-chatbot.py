@@ -91,6 +91,7 @@ def show_popup():
         document.getElementById('overlay').addEventListener('click', function() {{
             document.getElementById('example-modal').style.display = 'none';
             document.getElementById('overlay').style.display = 'none';
+            window.scrollTo(0, 0);
         }});
     </script>
     """
@@ -159,13 +160,17 @@ def add_dane_suffix(text):
         if sentence:
             # 정규식으로 종결 어미 제거
             sentence = ending_pattern.sub('', sentence)
-            new_sentences.append(sentence + '다네' + punctuation)
+            # 중복 접미사 방지
+            if not sentence.endswith('다네'):
+                new_sentences.append(sentence + '다네' + punctuation)
 
     if len(sentences) % 2 != 0:
         sentence = sentences[-1].strip()
         if sentence:
             sentence = ending_pattern.sub('', sentence)
-            new_sentences.append(sentence + '다네')
+            # 중복 접미사 방지
+            if not sentence.endswith('다네'):
+                new_sentences.append(sentence + '다네')
 
     return ' '.join(new_sentences)
 
