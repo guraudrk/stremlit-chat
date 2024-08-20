@@ -132,8 +132,12 @@ def find_similar_answer(question, data, vectorizer, lstm_model, tokenizer, thres
         q_seq = tokenizer.texts_to_sequences([preprocess_text(q)])
         q_seq = pad_sequences(q_seq, maxlen=question_seq.shape[1])
 
-        lstm_sim = lstm_model.predict([question_seq, q_seq])
-        avg_sim = (sim + lstm_sim.mean()) / 2
+        try:
+            lstm_sim = lstm_model.predict([question_seq, q_seq])
+            avg_sim = (sim + lstm_sim.mean()) / 2
+        except Exception as e:
+            st.error(f"LSTM 모델 예측에서 오류 발생: {e}")
+            return most_similar_answer
 
         if avg_sim > max_sim:
             max_sim = avg_sim
@@ -160,7 +164,6 @@ def add_dane_suffix(text):
         if sentence:
             # 정규식으로 종결 어미 제거
             sentence = ending_pattern.sub('', sentence)
-            # 중복 접미사 방지
             if not sentence.endswith('다네'):
                 new_sentences.append(sentence + '다네' + punctuation)
 
@@ -168,7 +171,6 @@ def add_dane_suffix(text):
         sentence = sentences[-1].strip()
         if sentence:
             sentence = ending_pattern.sub('', sentence)
-            # 중복 접미사 방지
             if not sentence.endswith('다네'):
                 new_sentences.append(sentence + '다네')
 
