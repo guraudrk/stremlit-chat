@@ -83,7 +83,7 @@ st.title('AI 세종대왕과 대화하기')
 user_question = st.text_input(
     '질문을 입력하세요:', 
     '',
-    placeholder='원활한 질문을 위해 사이드바의 예시 질문을 확인해주세요'
+    placeholder='원활한 질문을 위해 사이드바의 예시 질문을 확인해주세요.'
 )
 
 # 대화 내역을 저장할 리스트
