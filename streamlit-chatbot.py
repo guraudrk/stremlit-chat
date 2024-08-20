@@ -61,6 +61,15 @@ organized_data, tokenizer, word_map, vectorizer, lstm_model = load_data()
 if not all([organized_data, tokenizer, word_map, vectorizer, lstm_model]):
     st.stop()
 
+# 사이드바에 예시 질문 추가하기
+def show_examples_sidebar(data):
+    st.sidebar.header('예시 질문')
+    questions = [qa['Q'] for qa in data]
+    for question in questions:
+        st.sidebar.text(question)
+
+show_examples_sidebar(organized_data)
+
 # 상단에 세종대왕 이미지 추가
 st.markdown("""
     <div style='text-align: center;'>
@@ -70,20 +79,11 @@ st.markdown("""
 
 st.title('AI 세종대왕과 대화하기')
 
-# 페이지 하단에 예시 질문 표시하기
-def show_examples_bottom(data):
-    st.markdown('### 예시 질문')
-    questions = [qa['Q'] for qa in data]
-    for question in questions:
-        st.text(question)
-
-show_examples_bottom(organized_data)
-
 # 사용자 질문 입력
 user_question = st.text_input(
     '질문을 입력하세요:', 
     '',
-    placeholder='원활한 질문을 위해 상단의 예시 질문을 확인해주세요'
+    placeholder='원활한 질문을 위해 사이드바의 예시 질문을 확인해주세요'
 )
 
 # 대화 내역을 저장할 리스트
