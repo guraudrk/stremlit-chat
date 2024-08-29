@@ -131,29 +131,46 @@ def replace_words(text, word_map):
     return text
 
 def add_dane_suffix(text):
+    # 종결어미 목록 (복합 종결어미를 포함)
+    endings = [
+        '습니다', '합니다', '었습니다', '았어요', '었어요', '해요', 
+        '죠', '니까', '나요', '다', '라', '냐', '는가', '다네'
+    ]
+    
+    def replace_endings(match):
+        sentence = match.group(0)
+        for ending in endings:
+            if sentence.endswith(ending):
+                return sentence[:-len(ending)] + '다네'
+        return sentence + '다네'
+    
+    # 문장 끝에 구두점이 있는 경우를 포함하여 문장을 분리합니다.
     sentences = re.split(r'([.?!])', text)
     new_sentences = []
-
-    # 종결 어미들을 하나의 정규식 패턴으로 정의
-    ending_pattern = re.compile(r'(다|까|니|라|냐|는가|나요)$')
 
     for i in range(0, len(sentences) - 1, 2):
         sentence = sentences[i].strip()
         punctuation = sentences[i + 1]
-        if sentence:
-            # 정규식으로 종결 어미 제거
-            sentence = ending_pattern.sub('', sentence)
-            if not sentence.endswith('다네'):
-                new_sentences.append(sentence + '다네' + punctuation)
-
+        if sentence:  # 문장이 비어있지 않다면
+            sentence_with_suffix = re.sub(
+                '|'.join(re.escape(ending) for ending in endings),
+                replace_endings,
+                sentence
+            )
+            new_sentences.append(sentence_with_suffix + punctuation)
+    
+    # 마지막 문장이 구두점으로 끝나지 않은 경우
     if len(sentences) % 2 != 0:
         sentence = sentences[-1].strip()
         if sentence:
-            sentence = ending_pattern.sub('', sentence)
-            if not sentence.endswith('다네'):
-                new_sentences.append(sentence + '다네')
-
-    return ' '.join(new_sentences)
+            sentence_with_suffix = re.sub(
+                '|'.join(re.escape(ending) for ending in endings),
+                replace_endings,
+                sentence
+            )
+            new_sentences.append(sentence_with_suffix)
+    
+    return ''.join(new_sentences)
 
 # 대화 기록을 말풍선 스타일로 출력
 def display_chat_history(chat_history):
