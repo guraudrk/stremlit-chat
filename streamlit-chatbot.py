@@ -42,23 +42,20 @@ def load_data():
         with open('tokenizer.pickle', 'rb') as f:
             tokenizer = pickle.load(f)
 
-        with open('word_map.pickle', 'rb') as f:
-            word_map = pickle.load(f)
-
         with open('vectorizer.pickle', 'rb') as f:  # Vectorizer 로드
             vectorizer = pickle.load(f)
 
         model_file = download_model()
         lstm_model = load_model(model_file)
-        return organized_data, tokenizer, word_map, vectorizer, lstm_model
+        return organized_data, tokenizer, vectorizer, lstm_model
 
     except Exception as e:
         st.error(f"데이터를 로드하는 데 실패했습니다: {e}")
-        return None, None, None, None, None
+        return None, None, None, None
 
-organized_data, tokenizer, word_map, vectorizer, lstm_model = load_data()
+organized_data, tokenizer, vectorizer, lstm_model = load_data()
 
-if not all([organized_data, tokenizer, word_map, vectorizer, lstm_model]):
+if not all([organized_data, tokenizer, vectorizer, lstm_model]):
     st.stop()
 
 # 사이드바에 예시 질문 추가하기
@@ -171,6 +168,25 @@ def add_dane_suffix(text):
             new_sentences.append(sentence_with_suffix)
     
     return ''.join(new_sentences)
+
+# 어휘 목록
+word_map = {
+    "세종대왕": "과인",
+    "세종대": "과인의 시기",
+    "세종이": "과인이",
+    "세종은": "과인은",
+    "세종의": "과인의",
+    "이 시기": "과인의 시대에",
+    "세종에게서": "과인에게서",
+    "세종대왕 시대": "과인의 시대",
+    "세종도": "과인도",
+    "그의": "과인의",
+    "세종에게":"과인에게",
+    "그는":"과인은",
+    "됩니다":"된다네",
+    "입니다":"이라네",
+    "합니다":"한다네"
+}
 
 # 대화 기록을 말풍선 스타일로 출력
 def display_chat_history(chat_history):
