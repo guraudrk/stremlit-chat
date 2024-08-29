@@ -94,7 +94,7 @@ def preprocess_text(text):
     tokens = word_tokenize(text)
     return ' '.join(tokens)
 
-def find_similar_answer(question, data, vectorizer, lstm_model, tokenizer, threshold=0.2):
+def find_similar_answer(question, data, vectorizer, lstm_model, tokenizer, threshold=0.1):
     question = preprocess_text(question)
     question_vec = vectorizer.transform([question])
     question_seq = tokenizer.texts_to_sequences([question])
